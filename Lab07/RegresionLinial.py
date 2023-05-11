@@ -41,7 +41,20 @@ class LinearRegression():
 	def predict(self,x):
 		x = (x-self.mean)/self.sigma
 		x = np.insert(x,0,1)
-		print("Resultado:",np.dot(x,self.theta))
+		print(x,' -> ',np.dot(x,self.theta))
+		fig, axs = plt.subplots(round(self.n/3), 3, figsize=(6, 4))
+		col = 0
+		fil = 0
+		for j in range(self.n-1):
+			d = np.vstack(np.arange(start=np.min(self.x[:,j+1]),stop=np.max(self.x[:,j+1]),step=0.1))
+			axs[fil,col].plot(self.x[:,j+1],self.y,'gx')
+			axs[fil,col].plot(d,self.theta[0]+d*self.theta[j+1],'r-')
+			axs[fil,col].plot(x[j+1],self.theta[0]+x[j+1]*self.theta[j+1],'bo',linewidth=2, markersize=6)
+			col += 1 
+			if col==3 or col==6:
+				fil += 1
+				col = 0	
+		plt.show()
 
 
 	def graficaCosteInteraciones(self):
@@ -72,13 +85,12 @@ class LinearRegression():
 
 
 if __name__ == '__main__':
-	print("Funciona")
-	data = np.loadtxt('dataFutbol.txt',delimiter=",")
+	data = np.loadtxt('Lab07/dataFutbol.txt',delimiter=",")
 	x = data[:,:5]
 	y = data[:,5]
 	modelo = LinearRegression(0.01,1500,True)
 	modelo.fit_dg(x,y)
 	print('Coste minimo:',np.min(modelo.J_History))
 	modelo.graficos()
-	#x_p = [20,10,6,2,2]
-	#modelo.predict(x_p)
+	x_p = [20,10,6,2,2]
+	modelo.predict(x_p)
